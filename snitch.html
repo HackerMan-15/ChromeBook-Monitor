@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snitch</title>
+</head>
+<body>
+  <h1>Snitch Activated</h1>
+  <video id="video" autoplay playsinline width="320" height="240"></video>
+
+  <script>
+    // Start webcam stream
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        document.getElementById('video').srcObject = stream;
+      })
+      .catch(error => {
+        console.error("Camera error:", error);
+      });
+  </script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyA33_4RqvYVqDjuC_NvRd4k19bgXNWMQVc",
+      authDomain: "chromebook-monitor-523fb.firebaseapp.com",
+      projectId: "chromebook-monitor-523fb",
+      storageBucket: "chromebook-monitor-523fb.firebasestorage.app",
+      messagingSenderId: "195415614613",
+      appId: "1:195415614613:web:107dfbb8df8081f05ce79c",
+      measurementId: "G-J5JFY458QY"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const firestore = firebase.firestore();
+  </script>
+</body>
+</html>
